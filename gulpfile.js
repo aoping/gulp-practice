@@ -3,6 +3,7 @@ var browserSync = require('browser-sync').create();
 var sass = require('gulp-sass');
 var filter = require('gulp-filter');
 var uglify = require('gulp-uglify');
+var browserify = require('gulp-browserify'); // 用于把依赖也打进同一个包
 var reload = browserSync.reload;
 
 // 静态服务器 + 监听 scss/html 文件
@@ -30,7 +31,7 @@ gulp.task('sass', function() {
 // 处理完JS文件后返回流
 gulp.task('js', function() {
     return gulp.src('app/js/*js')
-        // .pipe(browserify())
+        .pipe(browserify())
         .pipe(uglify())
         .pipe(gulp.dest('dist/js'));
 });
