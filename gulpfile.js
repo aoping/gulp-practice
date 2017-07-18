@@ -21,6 +21,8 @@ var cssmin = require('gulp-minify-css');
 var cssver = require('gulp-make-css-url-version');
 var rev = require('gulp-rev-append');
 var concat = require('gulp-concat');
+var autoprefixer = require('gulp-autoprefixer');
+
 // 静态服务器 + 监听 scss/html 文件
 gulp.task('serve', ['sass', 'less', 'js', 'html'], function() {
 
@@ -184,5 +186,17 @@ gulp.task('testConcat', function() {
     gulp.src('src/js/*.js')
         .pipe(concat('all.js')) //合并后的文件名
         .pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('testAutoFx', function() {
+    gulp.src('src/css/index.css')
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions', 'Android >= 4.0'],
+            cascade: true, //是否美化属性值 默认：true 像这样：
+            //-webkit-transform: rotate(45deg);
+            //        transform: rotate(45deg);
+            remove: true //是否去掉不必要的前缀 默认：true 
+        }))
+        .pipe(gulp.dest('dist/css'));
 });
 gulp.task('default', ['serve']);
