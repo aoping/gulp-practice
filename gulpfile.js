@@ -19,7 +19,7 @@ var pngquant = require('imagemin-pngquant'); // 使用pngquant深度压缩png图
 var cache = require('gulp-cache');
 var cssmin = require('gulp-minify-css');
 var cssver = require('gulp-make-css-url-version');
-
+var rev = require('gulp-rev-append');
 
 // 静态服务器 + 监听 scss/html 文件
 gulp.task('serve', ['sass', 'less', 'js', 'html'], function() {
@@ -160,5 +160,11 @@ gulp.task('testCssmin', function() {
                 //保留所有特殊前缀 当你用autoprefixer生成的浏览器前缀，如果不加这个参数，有可能将会删除你的部分前缀
         }))
         .pipe(gulp.dest('dist/css'));
+});
+
+gulp.task('testRev', function() {
+    gulp.src('src/html/index.html')
+        .pipe(rev())
+        .pipe(gulp.dest('dist/html'));
 });
 gulp.task('default', ['serve']);
