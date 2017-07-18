@@ -20,7 +20,7 @@ var cache = require('gulp-cache');
 var cssmin = require('gulp-minify-css');
 var cssver = require('gulp-make-css-url-version');
 var rev = require('gulp-rev-append');
-
+var concat = require('gulp-concat');
 // 静态服务器 + 监听 scss/html 文件
 gulp.task('serve', ['sass', 'less', 'js', 'html'], function() {
 
@@ -177,6 +177,12 @@ gulp.task('jsmin', function() {
             compress: true, //类型：Boolean 默认：true 是否完全压缩
             preserveComments: 'all' //保留所有注释
         }))
+        .pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('testConcat', function() {
+    gulp.src('src/js/*.js')
+        .pipe(concat('all.js')) //合并后的文件名
         .pipe(gulp.dest('dist/js'));
 });
 gulp.task('default', ['serve']);
