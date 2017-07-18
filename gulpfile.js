@@ -14,7 +14,9 @@ var notify = require('gulp-notify');
 var plumber = require('gulp-plumber');
 var livereload = require('gulp-livereload');
 var htmlmin = require('gulp-htmlmin');
-
+var imagemin = require('gulp-imagemin');
+var pngquant = require('imagemin-pngquant'); // 使用pngquant深度压缩png图片的imagemin插件
+var cache = require('gulp-cache');
 
 
 // 静态服务器 + 监听 scss/html 文件
@@ -109,5 +111,39 @@ gulp.task('watch-less', function() {
     gulp.watch('app/less/**/*.less', ['less']);
 });
 
-
+gulp.task('testImagemin', function() {
+    gulp.src('src/img/*.{png,jpg,gif,ico}')
+        .pipe(imagemin())
+        .pipe(gulp.dest('dist/img'));
+});
+gulp.task('testImagemin2', function() {
+    gulp.src('src/img/*.{png,jpg,gif,ico}')
+        .pipe(imagemin({
+            optimizationLevel: 5, //类型：Number  默认：3  取值范围：0-7（优化等级）
+            progressive: true, //类型：Boolean 默认：false 无损压缩jpg图片
+            interlaced: true, //类型：Boolean 默认：false 隔行扫描gif进行渲染
+            multipass: true //类型：Boolean 默认：false 多次优化svg直到完全优化
+        }))
+        .pipe(gulp.dest('dist/img'));
+});
+//深度压缩图片
+gulp.task('testImagemin3', function() {
+    gulp.src('src/img/*.{png,jpg,gif,ico}')
+        .pipe(imagemin({
+            progressive: true,
+            svgoPlugins: [{ removeViewBox: false }], //不要移除svg的viewbox属性
+            use: [pngquant()] //使用pngquant深度压缩png图片的imagemin插件
+        }))
+        .pipe(gulp.dest('dist/img'));
+});
+//只压缩修改的图片
+gulp.task('testImagemin', function() {
+    gulp.src('src/img/*.{png,jpg,gif,ico}')
+        .pipe(cache(imagemin({
+            progressive: true,
+            svgoPlugins: [{ removeViewBox: false }],
+            use: [pngquant()]
+        })))
+        .pipe(gulp.dest('dist/img'));
+});
 gulp.task('default', ['serve']);
